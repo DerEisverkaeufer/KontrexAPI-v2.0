@@ -1,24 +1,20 @@
 package net.kontrex.api;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Sound;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import net.kontrex.api.command.GameModeCommand;
 import net.kontrex.api.listener.KickListener;
 import net.kontrex.api.system.CommandSystem;
+import org.bukkit.Bukkit;
+import org.bukkit.Sound;
+import org.bukkit.command.Command;
+import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class KontrexAPI extends JavaPlugin implements Listener {
 
@@ -49,16 +45,44 @@ public class KontrexAPI extends JavaPlugin implements Listener {
 		return skinAPI;
 	}
 	
-	public static void setBungeeCord(boolean bungeeCord) {
-		KontrexAPI.bungeeCord = bungeeCord;
-	}
-	
 	public static KontrexAPI getApi() {
 		return api;
+	}
+
+	public static boolean isBungeeCord() {
+		return bungeeCord;
+	}
+
+	public static void enableBungeeCord() {
+		new Timer().schedule(new TimerTask() {
+
+			@Override
+			public void run() {
+				bungeeCord = true;
+			}
+		}, 1000);
+	}
+
+	public static void disableBungeeCord() {
+		new Timer().schedule(new TimerTask() {
+
+			@Override
+			public void run() {
+				bungeeCord = false;
+			}
+		}, 1000);
 	}
 	
 	public static JsonAPI getJsonAPI() {
 		return jsonAPI;
+	}
+
+	private static String pluginName(Plugin plugin) {
+		if(plugin.isEnabled()) {
+			return "§a" + plugin.getName();
+		} else {
+			return "§c" + plugin.getName();
+		}
 	}
 	
 	@EventHandler
@@ -76,9 +100,32 @@ public class KontrexAPI extends JavaPlugin implements Listener {
 			return;
 		}
 		
-		if(!e.getPlayer().hasPermission("kontrex.plugins") && (name.equalsIgnoreCase("pl") || name.equalsIgnoreCase("plugins") || name.equalsIgnoreCase("help") || name.equalsIgnoreCase("?") || name.equalsIgnoreCase("ver") || name.equalsIgnoreCase("icanhasbukkit") || name.equalsIgnoreCase("me") || name.equalsIgnoreCase("version") || name.equalsIgnoreCase("about") || name.equalsIgnoreCase("tell") || name.toLowerCase().contains("mv"))) {
-			CommandSystem.getInstance().sendNoPerm(e.getPlayer());
+		if((name.equalsIgnoreCase("pl") || name.equalsIgnoreCase("plugins") || name.equalsIgnoreCase("help") || name.equalsIgnoreCase("?") || name.equalsIgnoreCase("ver") || name.equalsIgnoreCase("icanhasbukkit") || name.equalsIgnoreCase("me") || name.equalsIgnoreCase("version") || name.equalsIgnoreCase("about") || name.equalsIgnoreCase("tell") || name.toLowerCase().contains("mv"))) {
 			e.setCancelled(true);
+			if(!e.getPlayer().hasPermission("kontrex.plugins")) {
+				CommandSystem.getInstance().sendNoPerm(e.getPlayer());
+			} else {
+				Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
+				int count = plugins.length;
+				String pluginList = "";
+				e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BURP, 1, 1.5f);
+
+				for(int i = 0; i < count; i++) {
+					if(pluginList.equals("")) {
+						pluginList = pluginName(plugins[i]);
+					} else {
+						pluginList += "§8, " + pluginName(plugins[i]);
+					}
+				}
+
+				if(count == 0) {
+				    e.getPlayer().sendMessage(Var.prefix + "Auf diesem Server sind §bkeine Plugins §7installiert§8.");
+                } else {
+                    e.getPlayer().sendMessage(Var.prefix + "Auf diesem Server sind §b" + count + " §7Plugins installiert§8.");
+                    e.getPlayer().sendMessage(Var.prefix + pluginList);
+                }
+
+			}
 			return;
 		}
 		
@@ -91,7 +138,7 @@ public class KontrexAPI extends JavaPlugin implements Listener {
 			e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.VILLAGER_NO, 1, 1);
 			CommandSystem.getInstance().sendNoPerm(e.getPlayer());
 		}
-		
+
 	}
 
 }

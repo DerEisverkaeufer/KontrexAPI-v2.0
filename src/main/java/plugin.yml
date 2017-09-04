@@ -1,0 +1,9 @@
+name: KontrexAPI
+author: DerEisverkaeufer
+version: 1.0
+main: net.kontrex.api.KontrexAPI
+
+commands:
+     gamemode:
+       aliases: [gm]
+       permission: kontrex.gamemode
