@@ -100,7 +100,7 @@ public class KontrexAPI extends JavaPlugin implements Listener {
 			return;
 		}
 		
-		if((name.equalsIgnoreCase("pl") || name.equalsIgnoreCase("plugins") || name.equalsIgnoreCase("help") || name.equalsIgnoreCase("?") || name.equalsIgnoreCase("ver") || name.equalsIgnoreCase("icanhasbukkit") || name.equalsIgnoreCase("me") || name.equalsIgnoreCase("version") || name.equalsIgnoreCase("about") || name.equalsIgnoreCase("tell") || name.toLowerCase().contains("mv"))) {
+		if((name.equalsIgnoreCase("pl") || name.equalsIgnoreCase("plugins") || name.equalsIgnoreCase("help") || name.equalsIgnoreCase("?") || name.equalsIgnoreCase("ver") || name.equalsIgnoreCase("icanhasbukkit") || name.equalsIgnoreCase("me") || name.equalsIgnoreCase("version") || name.equalsIgnoreCase("about") || name.equalsIgnoreCase("tell"))) {
 			e.setCancelled(true);
 			if(!e.getPlayer().hasPermission("kontrex.plugins")) {
 				CommandSystem.getInstance().sendNoPerm(e.getPlayer());
@@ -126,6 +126,12 @@ public class KontrexAPI extends JavaPlugin implements Listener {
                 }
 
 			}
+			return;
+		}
+
+		if(name.toLowerCase().contains("mv")) {
+			e.setCancelled(true);
+			CommandSystem.getInstance().sendNoPerm(e.getPlayer());
 			return;
 		}
 		
