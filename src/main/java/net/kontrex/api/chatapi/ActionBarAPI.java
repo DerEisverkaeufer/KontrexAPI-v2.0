@@ -11,6 +11,11 @@ import org.bukkit.entity.Player;
  */
 public class ActionBarAPI {
 
+    /**
+     * Sends a message to a specified player in the ActionBar.
+     * @param p The player which will see the message.
+     * @param msg The message which will be shown to the player.
+     */
     public static void send(Player p, String msg) {
         PlayerConnection con = ((CraftPlayer)p).getHandle().playerConnection;
         IChatBaseComponent component = IChatBaseComponent.ChatSerializer.a("{\"text\":\"" + msg + "\"}");

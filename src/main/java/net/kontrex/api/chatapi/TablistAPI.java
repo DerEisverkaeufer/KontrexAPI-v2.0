@@ -13,6 +13,12 @@ import java.lang.reflect.Field;
  */
 public class TablistAPI {
 
+    /**
+     * Sets the tablist header and footer of a specified player.
+     * @param p The player which header and footer will be set.
+     * @param header The header which will be set for the player.
+     * @param footer The footer which will be set for the player.
+     */
     public static void set(Player p, String header, String footer) {
         PlayerConnection con = ((CraftPlayer)p).getHandle().playerConnection;
 
