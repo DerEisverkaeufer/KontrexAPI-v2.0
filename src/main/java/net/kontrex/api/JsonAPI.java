@@ -11,13 +11,7 @@ import com.google.gson.JsonParser;
 
 public class JsonAPI {
 
-	private KontrexAPI api;
-	
-	public JsonAPI(KontrexAPI api) {
-		this.api = api;
-	}
-
-	private JsonObject parseJson(String domain) throws IOException {
+	private static JsonObject parseJson(String domain) throws IOException {
 		URL url = new URL(domain);
 		HttpURLConnection request = (HttpURLConnection) url.openConnection();
 		request.connect();
@@ -28,7 +22,7 @@ public class JsonAPI {
 		return rootobj;
 	}
 	
-	public JsonObject readObj(String url) {
+	public static JsonObject readObj(String url) {
 		try {
 			return parseJson(url);
 		} catch (IOException e) {
@@ -37,7 +31,7 @@ public class JsonAPI {
 		return null;
 	}
 	
-	public String readString(String url, String key) {
+	public static String readString(String url, String key) {
 		try {
 			JsonObject obj = parseJson(url);
 			String s = obj.get(key).getAsString();

@@ -19,32 +19,18 @@ import java.util.TimerTask;
 public class KontrexAPI extends JavaPlugin implements Listener {
 
 	private static KontrexAPI api;
-	private static JsonAPI jsonAPI;
-	private static SkinAPI skinAPI;
-	private static UUIDFetcher uuidFetcher;
 	private static boolean bungeeCord = true;
 	
 	@Override
 	public void onEnable() {
 		api = this;
-		jsonAPI = new JsonAPI(api);
-		skinAPI = new SkinAPI(api);
-		uuidFetcher = new UUIDFetcher(api);
-		
+
 		Bukkit.getPluginManager().registerEvents(this, this);
 		Bukkit.getPluginManager().registerEvents(new KickListener(), this);
 		
 		this.getCommand("gamemode").setExecutor(new GameModeCommand());
 	}
-	
-	public static UUIDFetcher getUuidFetcher() {
-		return uuidFetcher;
-	}
-	
-	public static SkinAPI getSkinAPI() {
-		return skinAPI;
-	}
-	
+
 	public static KontrexAPI getApi() {
 		return api;
 	}
@@ -73,10 +59,6 @@ public class KontrexAPI extends JavaPlugin implements Listener {
 		}, 1000);
 	}
 	
-	public static JsonAPI getJsonAPI() {
-		return jsonAPI;
-	}
-
 	private static String pluginName(Plugin plugin) {
 		if(plugin.isEnabled()) {
 			return "§a" + plugin.getName();
