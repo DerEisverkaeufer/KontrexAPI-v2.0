@@ -7,3 +7,6 @@ commands:
      gamemode:
        aliases: [gm]
        permission: kontrex.gamemode
+     teleport:
+       aliases: [tp]
+       permission: kontrex.teleport

@@ -18,10 +18,11 @@ public class KickListener implements Listener {
 			e.getPlayer().sendMessage(Var.prefix + "§cKomm mal runter§8!");
 			return;
 		}
-		
+
 		e.setLeaveMessage(null);
 		for(Player p : Bukkit.getOnlinePlayers())
-			p.sendMessage(Var.prefix + "§b" + e.getPlayer().getName() + " §7wurde vom Server gekickt§8: §3" + e.getReason());
+			p.sendMessage(Var.prefix + "§b" + e.getPlayer().getName() + " §7wurde vom Server gekickt§8: §6" + e.getReason());
+		e.setReason(Var.prefix + e.getReason());
 	}
 
 }

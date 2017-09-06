@@ -44,7 +44,12 @@ public class CommandSystem {
 	 * @return The formatted message.
 	 */
 	public String getUsage(String cmdWithoutSlash) {
-		return getPrefix() + "§cKorrekte Verwendung§8: §6/" + cmdWithoutSlash;
+		return getPrefix() + "§cKorrekte Verwendung§8: §8/§6" + cmdWithoutSlash.replace("<", "§8<§a").replace(">", "§8>§6").replace("/", "§8/§6").replace("oder", "§7oder§6");
+	}
+
+	public void sendPlayerNotFound(CommandSender sender, String playername) {
+		sender.sendMessage(getPrefix() + "Der Spieler mit dem Namen §6" + playername + " §7ist nicht online§8!");
+		sender.sendMessage(getPrefix() + "Bitte überprüfe die §eRechtschreibung §7des Namens§8.");
 	}
 	
 	public String getPrefix() {
