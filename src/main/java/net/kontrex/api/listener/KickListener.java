@@ -15,8 +15,11 @@ public class KickListener implements Listener {
 		
 		if(e.getReason().contains("disconnect.spam")) {
 			e.setCancelled(true);
-			e.getPlayer().sendMessage(Var.prefix + "§cKomm mal runter§8!");
 			return;
+		}
+
+		if(e.getReason().contains(Var.prefix)) {
+			e.setReason(e.getReason().replace(Var.prefix, ""));
 		}
 
 		e.setLeaveMessage(null);

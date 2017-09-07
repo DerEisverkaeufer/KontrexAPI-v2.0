@@ -1,7 +1,12 @@
 package net.kontrex.api;
 
 import net.kontrex.api.command.GameModeCommand;
+import net.kontrex.api.command.TeleportCommand;
+import net.kontrex.api.listener.ChatListener;
 import net.kontrex.api.listener.KickListener;
+import net.kontrex.api.network.NetworkException;
+import net.kontrex.api.network.NetworkExceptionResult;
+import net.kontrex.api.network.NetworkMessenger;
 import net.kontrex.api.system.CommandSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -19,7 +24,9 @@ import java.util.TimerTask;
 public class KontrexAPI extends JavaPlugin implements Listener {
 
 	private static KontrexAPI api;
-	private static boolean bungeeCord = true;
+	private boolean bungeeCord = true;
+	private NetworkMessenger networkMessenger;
+	private boolean networkMessengerConnected = false;
 	
 	@Override
 	public void onEnable() {
@@ -27,19 +34,38 @@ public class KontrexAPI extends JavaPlugin implements Listener {
 
 		Bukkit.getPluginManager().registerEvents(this, this);
 		Bukkit.getPluginManager().registerEvents(new KickListener(), this);
+		Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
 		
 		this.getCommand("gamemode").setExecutor(new GameModeCommand());
+		this.getCommand("teleport").setExecutor(new TeleportCommand());
+	}
+
+	public void connectNetworkMessenger(String ip, int port, boolean autoKill) {
+		networkMessenger = new NetworkMessenger(ip, port, 3000, autoKill);
+		networkMessengerConnected = true;
+	}
+
+	public NetworkMessenger getNetworkMessenger() throws NetworkException {
+
+		if(!isNetworkMessengerConnected())
+			throw new NetworkException(NetworkExceptionResult.CLIENT_NOT_CONNECTED);
+
+		return networkMessenger;
+	}
+
+	public boolean isNetworkMessengerConnected() {
+		return networkMessengerConnected;
 	}
 
 	public static KontrexAPI getApi() {
 		return api;
 	}
 
-	public static boolean isBungeeCord() {
+	public boolean isBungeeCord() {
 		return bungeeCord;
 	}
 
-	public static void enableBungeeCord() {
+	public void enableBungeeCord() {
 		new Timer().schedule(new TimerTask() {
 
 			@Override
@@ -49,7 +75,7 @@ public class KontrexAPI extends JavaPlugin implements Listener {
 		}, 1000);
 	}
 
-	public static void disableBungeeCord() {
+	public void disableBungeeCord() {
 		new Timer().schedule(new TimerTask() {
 
 			@Override

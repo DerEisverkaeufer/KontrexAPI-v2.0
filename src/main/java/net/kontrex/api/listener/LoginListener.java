@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.server.ServerListPingEvent;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -18,7 +19,7 @@ public class LoginListener implements Listener {
 	public void on(PlayerLoginEvent e) {
 		final Player p = e.getPlayer();
 
-		if(KontrexAPI.isBungeeCord() && !p.getAddress().getHostName().equals("127.0.0.1")) {
+		if(KontrexAPI.getApi().isBungeeCord() && !p.getAddress().getHostName().equals("127.0.0.1")) {
 			if(trys.containsKey(p)) {
 				trys.put(p, trys.get(p) + 1);
 			} else {
