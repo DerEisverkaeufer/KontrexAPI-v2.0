@@ -1,14 +1,21 @@
 package net.kontrex.api.listener;
 
+import net.kontrex.api.KontrexAPI;
 import net.kontrex.api.Var;
 import net.kontrex.api.chatapi.ActionBarAPI;
 import net.kontrex.api.chatapi.ChatAPI;
 import net.kontrex.api.chatapi.TitleAPI;
+import net.kontrex.api.database.DevAPI;
+import net.kontrex.api.database.DevMode;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
+
+import java.util.HashMap;
 
 /**
  * Created by CodingEis / DerEisverkaeufer:
@@ -22,14 +29,42 @@ import org.bukkit.event.player.PlayerChatEvent;
 
 public class ChatListener implements Listener {
 
+    public static HashMap<Player, Integer> count = new HashMap<>();
+
     @EventHandler
     public void on(PlayerChatEvent e) {
+
+        if(!count.containsKey(e.getPlayer())) {
+            count.put(e.getPlayer(), 1);
+        } else {
+            count.put(e.getPlayer(), count.get(e.getPlayer()) + 1);
+        }
+
+        if(count.get(e.getPlayer()) > 2 && count.get(e.getPlayer()) < 8) {
+
+            if(DevMode.isInDevMode(e.getPlayer())) {
+                DevAPI.notify(e.getPlayer(), getClass(), "Du wirst benachrichtigt, da du §e" + count.get(e.getPlayer()) + "§7 Chatnachrichten in der Sekunde gesendet hast§8!");
+                return;
+            }
+
+            TitleAPI.send(e.getPlayer(), ChatAPI.generatePrefix(ChatColor.YELLOW, "AntiSpam"), "§7Bitte spamme keine Nachrichten§8! [§a" + count.get(e.getPlayer()) + "§7NPS§8]", 5, 100, 5);
+            e.setCancelled(true);
+            return;
+        } else if(count.get(e.getPlayer()) == 8) {
+
+            if(DevMode.isInDevMode(e.getPlayer())) {
+                DevAPI.notify(e.getPlayer(), getClass(), "Du wirst gekickt, da du §e8§7 Chatnachrichten in der Sekunde gesendet hast§8!");
+                return;
+            }
+
+            e.getPlayer().kickPlayer("§cBitte spamme keine Chatnachrichten§8!");
+            e.setCancelled(true);
+        }
 
         if(e.getMessage().startsWith("/"))
             return;
 
         String msg = e.getMessage();
-        String changes = "";
         String[] args = msg.split(" ");
 
         for(int i = 0; i < args.length; i++) {
@@ -38,32 +73,27 @@ public class ChatListener implements Listener {
                     .replace(".", "").replace("!", "").replace("?", "")
                     .replace(",", "").replace("-", "");
             if(arg.equals("low")) {
-                changes += " × " + args[i];
                 args[i] = "gut";
             } else if(arg.equals("hs") || arg.equals("hurensohn") || arg.equals("huso")) {
-                changes += " × " + args[i];
                 args[i] = "Teddybär";
             } else if(arg.equals("ez") || arg.equals("easy") || arg.equals("e²")) {
-                changes += " × " + args[i];
-                args[i] = "knapp";
+                args[i] = "schwer";
             } else if(arg.equals("misset") || arg.equals("missgeburt")) {
-                changes += " × " + args[i];
                 args[i] = "Blümchen";
             } else if(arg.equals("scheiße")) {
-                changes += " × " + args[i];
-                args[i] = "richtig";
+                args[i] = "krass";
             } else if(arg.equals("kid") || arg.equals("kiddy") || arg.equals("kiddie")) {
-                changes += " × " + args[i];
                 args[i] = "Schmetterling";
             } else if(arg.equals("gay")) {
-                changes += " × " + args[i];
                 args[i] = "cool";
             } else if(arg.equals("lowes")) {
-                changes += " × " + args[i];
                 args[i] = "gutes";
             } else if(arg.equals("scheiß")) {
-                changes += " × " + args[i];
-                args[i] = "richtiges";
+                args[i] = "krasses";
+            } else if(arg.equals("fett")) {
+                args[i] = "hübsch <3";
+            } else {
+                continue;
             }
         }
 
@@ -74,14 +104,6 @@ public class ChatListener implements Listener {
 
         newmsg = newmsg.replaceFirst(" ", "");
         e.setMessage(newmsg);
-
-        if(!changes.equals("")) {
-            changes = changes.replaceFirst(" ", "");
-            changes = changes.replaceFirst("×", "");
-            changes = "§f§l" + changes.replace("×", "§8●§f§l");
-            e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BURP, 2, 1);
-            ActionBarAPI.send(e.getPlayer(), ChatAPI.generatePrefix(ChatColor.DARK_RED, "§lCensored") + changes);
-        }
     }
 
 }

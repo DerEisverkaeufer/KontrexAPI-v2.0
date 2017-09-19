@@ -10,3 +10,9 @@ commands:
      teleport:
        aliases: [tp]
        permission: kontrex.teleport
+     time:
+       aliases: [tm]
+       permission: kontrex.time
+     devmode:
+       aliases: [dev]
+       permission: kontrex.devmode

@@ -65,6 +65,10 @@ public class CommandSystem {
 		return ((CraftServer)Bukkit.getServer()).getCommandMap().getCommand(cmdName).getPermission();
 	}
 
+	public void sendNonAccessToConsole() {
+		Bukkit.getConsoleSender().sendMessage(getPrefix() + "§cDiese Aktion wird nicht für die Console unterstützt!");
+	}
+
 	/**
 	 * Sends an unknown command message to a specified CommandSender.
 	 * @param p The CommandSender which the message will be send to.
